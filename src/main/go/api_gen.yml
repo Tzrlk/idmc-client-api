@@ -1,0 +1,22 @@
+---
+compatibility:
+  always-prefix-enum-values: true
+#additional-imports:
+#  - alias:   common
+#    package: idmc-client-api/internal/common
+output-options:
+  nullable-type: true
+#  user-templates: # https://github.com/oapi-codegen/oapi-codegen/tree/main/pkg/codegen/templates
+#    additional-properties.tmpl:           ../templates/additional-properties.go.tmpl
+#    client.tmpl:                          ../templates/client.go.tmpl
+#    client-with-responses.tmpl:           ../templates/client-with-responses.go.tmpl
+#    constants.tmpl:                       ../templates/constants.go.tmpl
+#    imports.tmpl:                         ../templates/imports.go.tmpl
+#    inline.tmpl:                          ../templates/inline.go.tmpl
+#    param-types.tmpl:                     ../templates/param-types.go.tmpl
+#    request-bodies.tmpl:                  ../templates/request-bodies.go.tmpl
+#    typedef.tmpl:                         ../templates/typedef.go.tmpl
+#    union.tmpl:                           ../templates/union.go.tmpl
+#    union-and-additional-properties.tmpl: ../templates/union-and-additional-properties.go.tmpl
+#import-mapping:
+#  ../common/openapi.yml: terraform-provider-idmc/internal/idmc/common

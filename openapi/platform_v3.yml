@@ -1,0 +1,675 @@
+openapi: '3.0.0'
+info:
+  title:   'Admin API for IDMC'
+  version: '3.0.0'
+externalDocs:
+  url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources.html
+paths:
+
+  /public/core/v3/login:
+    post:
+      operationId: login
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/login.html
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequestBody'
+      responses:
+        200:
+          description: |-
+            Returns user information if the request is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponseBody'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /public/core/v3/privileges:
+    parameters:
+      - name:  q
+        in:    query
+        style: simple
+        schema:
+          type: string
+        description: |-
+          The query string used to filter results.
+        example: |-
+          /public/core/v3/privileges?q=status==All
+    get:
+      operationId: listPrivileges
+      description: |-
+        Use the privileges resource to obtain a list of privileges that you can use for custom roles.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/b2b-gateway/current-version/rest-api-reference/platform_rest_api_version_3_resources/privileges.html
+      responses:
+        200:
+          description: |-
+            A successful response provides a list of privilege objects matching the implicit or explicit query.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/rolePrivilegeItem'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /public/core/v3/roles:
+    description: |-
+      You can request the details for all of your organization's roles or request the details for a particular role.
+    get:
+      operationId: getRoles
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/getting-role-details.html
+      parameters:
+        - $ref: '#/components/parameters/headerSession'
+        - name: q
+          in:   query
+          schema:
+            type: string
+          description: |-
+            Query filter. You can filter using one of the following fields:
+            * roleId. Unique identifier for the role.
+            * roleName. Name of the role.
+          example: |-
+            /public/core/v3/roles?q=roleName=="Business Manager"&expand=privileges
+        - name: expand
+          in:   query
+          description: |-
+            Returns the privileges associated with the role specified in the query filter.
+          schema:
+            type: string
+            enum:
+              - privileges
+      responses:
+        200:
+          description: |-
+            Returns role information if successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getRolesResponseBody'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+    post:
+      operationId: createRole
+      description: You can create custom roles for your organization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createRoleRequestBody'
+      responses:
+        201:
+          description: |-
+            If successful, returns the roles object with the details you included in the POST request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createRoleResponseBody'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /public/core/v3/roles/{role_ref}:
+    parameters:
+      - $ref: '#/components/parameters/headerSession'
+      - $ref: '#/components/parameters/pathRole'
+    delete:
+      operationId: deleteRole
+      description: |-
+        You can delete custom roles from your organization.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/deleting-a-role.html
+      responses:
+        200:
+          description: A successful deletion.
+        204:
+          $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /public/core/v3/roles/{role_ref}/addPrivileges:
+    parameters:
+      - $ref: '#/components/parameters/headerSession'
+      - $ref: '#/components/parameters/pathRole'
+    put:
+      operationId: addRolePrivileges
+      description: |-
+        You can add privileges for custom roles.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/updating-a-role.html
+      requestBody:
+        $ref: '#/components/requestBodies/rolePrivileges'
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /public/core/v3/roles/{role_ref}/removePrivileges:
+    parameters:
+      - $ref: '#/components/parameters/headerSession'
+      - $ref: '#/components/parameters/pathRole'
+    put:
+      operationId: removeRolePrivileges
+      description: |-
+        You can add privileges for custom roles.
+        You can't remove all of the privileges from a role. A role must have at least one privilege assigned to it.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/updating-a-role.html
+      requestBody:
+        $ref: '#/components/requestBodies/rolePrivileges'
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+components:
+
+  parameters:
+
+    headerSession:
+      name: INFA-SESSION-ID
+      in:   header
+      schema:
+        type: string
+      required: true
+
+    pathRole:
+      name: role_ref
+      in:   path
+      schema:
+        type: string
+      required: true
+      description: |-
+        Either role id or role name.
+
+  requestBodies:
+
+    rolePrivileges:
+      description: |-
+        A partial role object with an array of privileges.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/updateRoleRequestBody'
+
+  # https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/informatica-intelligent-cloud-services-rest-api/rest-api-responses.html
+  responses:
+
+    204:
+      description: |-
+        Successful operation with no response data.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody' # tentative
+
+    400:
+      description: |-
+        Bad request. Can be a field or format issue such as an invalid character or incorrect string length.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    401:
+      description: |-
+        Authentication issue. For example, invalid credentials or invalid session IDs.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    403:
+      description: |-
+        Generic error. For example, user doesn't have required permissions for a resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    404:
+      description: |-
+        Resource can't be found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    500:
+      description: |-
+        Unexpected error. Generic error message that appears when an unexpected condition was encountered.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    502:
+      description: |-
+        Network issue.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+    503:
+      description: |-
+        Service unavailable. The server cannot handle the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponseBody'
+
+  schemas:
+
+    apiErrorResponseBody:
+      description: |-
+        When the REST API encounters an error, it returns a REST API error object.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/informatica-intelligent-cloud-services-rest-api/error-object.html
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/apiError'
+      required:
+        - error
+      example: |-
+        {
+          "error": {
+            "code": "IDS_085",
+            "message": "User name or password is not valid.",
+            "requestId": "9hr8e2ObIcChbwYftgDui7",
+            "details": null
+          }
+        }
+    apiError:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/apiErrorDetail'
+        - properties:
+            requestId:
+              type: string
+            details:
+              type: array
+              items:
+                $ref: '#/components/schemas/apiErrorDetail'
+          required:
+            - requestId
+    apiErrorDetail:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        debugMessage:
+          type: string
+      required:
+        - code
+        - message
+
+    loginRequestBody:
+      type: object
+      properties:
+        username:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services user name for the organization that you want to log in to.
+          maxLength: 255
+        password:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services password.
+          maxLength: 255
+      required:
+        - username
+        - password
+
+    loginResponseBody:
+      type: object
+      properties:
+        products:
+          type: array
+          description: |-
+            Subscribed Informatica products.
+          items:
+            $ref: '#/components/schemas/loginResponseBodyProduct'
+        userInfo:
+          $ref: '#/components/schemas/loginResponseBodyUserInfo'
+      required:
+        - userInfo
+        - products
+    loginResponseBodyProduct:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            Product name.
+        baseApiUrl:
+          type: string
+          description: |-
+            Base API URL for the product. Use in REST API requests.
+      required:
+        - name
+        - baseApiUrl
+    loginResponseBodyUserInfo:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          description: |-
+            REST API session ID for the current session. Use in most REST API request headers.
+        id:
+          type: string
+          description: |-
+            User ID.
+        name:
+          type: string
+          description: |-
+            User name.
+        parentOrgId:
+          type: string
+          description: |-
+            Organization ID for the parent.
+          minLength: 22
+          maxLength: 22
+        orgId:
+          type: string
+          description: |-
+            ID of the organization the user belongs to.
+          minLength: 22
+          maxLength: 22
+        orgName:
+          type: string
+          description: |-
+            Organization name.
+        groups:
+          type: object
+          description: |-
+            User group information for the user.
+        status:
+          type: string
+          description: |-
+            Status of the user.
+          enum:
+            - Active
+            - Inactive
+      required:
+        - sessionId
+        - id
+        - name
+        - parentOrgId
+        - orgId
+        - orgName
+        - groups
+        - status
+
+    getRolesResponseBody:
+      type: array
+      items:
+        $ref: '#/components/schemas/getRolesResponseBodyItem'
+    getRolesResponseBodyItem:
+      allOf:
+        - $ref: '#/components/schemas/roleInfo'
+        - $ref: '#/components/schemas/withPrivilegeItems'
+
+    createRoleRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/withPrivilegeRefs'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: |-
+                Name of the role.
+            description:
+              type: string
+              description: |-
+                Description of the role.
+      required:
+        - name
+        - privileges
+
+    createRoleResponseBody:
+      allOf:
+        - $ref: '#/components/schemas/roleInfo'
+        - $ref: '#/components/schemas/withPrivilegeItems'
+
+    updateRoleRequestBody:
+      type: object
+      properties:
+        privileges:
+          type: array
+          items:
+            type:     string
+            nullable: false
+          description: |-
+            IDs of the privileges to assign to the role.
+            A role must have at least one privilege assigned to it.
+          minItems: 1
+      required:
+        - privileges
+
+    roleInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            Role ID.
+        orgId:
+          type: string
+          description: |-
+            ID of the organization the role belongs to.
+        createdBy:
+          type: string
+          description: |-
+            User who created the role.
+        updatedBy:
+          type: string
+          description: |-
+            User who last updated the role.
+        createTime:
+          type: string
+          description: |-
+            Date and time the role was created.
+        updateTime:
+          type: string
+          description: |-
+            Date and time the role was last updated.
+        roleName:
+          type: string
+          description: |-
+            Name of the role.
+        description:
+          type: string
+          description: |-
+            Description of the role.
+        displayName:
+          type: string
+          description: |-
+            Role name displayed in the user interface.
+        displayDescription:
+          type: string
+          description: |-
+            Description displayed in the user interface.
+        systemRole:
+          type: boolean
+          description: |-
+            Whether the role is a system-defined role.
+        status:
+          $ref: '#/components/schemas/roleStatus'
+
+    roleStatus:
+      type: string
+      description: |-
+        Whether the organization's license to use the role is valid or has expired.
+      enum:
+        - Enabled
+        - Disabled
+
+    withPrivilegeItems:
+      type: object
+      properties:
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/rolePrivilegeItem'
+      example: |-
+        {
+          "privileges": [
+            {
+              "id": "0nTOXl8dzEwlSFoM0cO8gI",
+              "name": "view.ai.designer",
+              "description": "View application integration designer"
+            },
+            {
+              "id": "aQwUdcM8RcQewA1yWphZ4F",
+              "name": "view.ai.assets",
+              "description": "View  application integration assets"
+            }
+          ]
+        }
+    rolePrivilegeItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            Privilege ID.
+        name:
+          type: string
+          description: |-
+            Name of the privilege.
+        description:
+          type: string
+          description: |-
+            Description of the privilege.
+        service:
+          type: string
+          description: |-
+            The Informatica Intelligent Cloud Services service that applies to the privilege.
+        status:
+          type: string
+          description: |-
+            Status of the privilege. Returns one of the following values:
+            * Enabled: License to use the privilege is valid.
+            * Disabled: License to use the privilege has expired.
+            * Unassigned: No license to use this privilege.
+            * Default: Privilege included by default.
+          enum:
+            - Enabled
+            - Disabled
+            - Default
+            - Unassigned
+      required:
+        - id
+        - name
+        - service
+        - status
+
+    withPrivilegeRefs:
+      type: object
+      properties:
+        privileges:
+          type: array
+          items:
+            type: string
+          description: |-
+            IDs of the privileges to assign to the role.
+            A role must have at least one privilege assigned to it.
+          minItems: 1
+      example: |-
+        {
+          "privileges" : ["create.api.collection", "delete.api.collection"]
+        }

@@ -1,0 +1,637 @@
+openapi: '3.0.0'
+info:
+  title:   'Admin API for IDMC'
+  version: '2.0.0'
+externalDocs:
+  url: https://docs.informatica.com/integration-cloud/b2b-gateway/current-version/rest-api-reference/platform-rest-api-version-2-resources.html
+paths:
+
+  /ma/api/v2/user/login:
+    post:
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequestBody'
+      responses:
+        200:
+          description: |-
+            Returns the user object if the request is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponseBody'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /api/v2/agent/installerInfo/{platform}:
+    get:
+      operationId: getAgentInstallerInfo
+      description: |-
+        To request an install token so that you can complete the Secure Agent registration process or to get the checksum of the agent installation program
+      parameters:
+        - name: platform
+          in:   path
+          schema:
+            type: string
+#            enum:
+#              - linux64
+#              - win64
+          description: |-
+            The platform for the installation program.
+      responses:
+        200:
+          description: |-
+            A successful request returns the download URL, install token, and checksum download URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getAgentInstallerInfoResponseBody'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /api/v2/runtimeEnvironment:
+    get:
+      operationId: listRuntimeEnvironments
+      description: |-
+        Request runtime environment information for an organization.
+      responses:
+        200:
+          description: |-
+            Returns all the runtime environments for the organization.
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+    post:
+      operationId: createRuntimeEnvironment
+      description: |-
+        You can use the runtimeEnvironment resource to create, update, and delete Secure Agent groups.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-2-resources/runtime_environments/creating_updating_and_deleting_secure_agent_groups.html
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/runtimeEnvironmentDataMinimal'
+      responses:
+        200:
+          description: |-
+            Successfully created the runtime environment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeEnvironment'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+  /api/v2/runtimeEnvironment/{id}:
+    parameters:
+      - name: id
+        in:   path
+        description: |-
+          The system-allocated id of the runtime environment.
+        schema:
+          type: string
+    get:
+      operationId: getRuntimeEnvironment
+      description: |-
+        Request the details of a particular runtime environment.
+      responses:
+        200:
+          description: |-
+            Successfully retrieved runtime environment information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeEnvironment'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+    post:
+      operationId: updateRuntimeEnvironment
+      description: |-
+        You can add or remove agents and rename Secure Agent groups. To move an agent from one Secure Agent group to another group, send a request to remove the agent from its current group and then send a request to add the agent to the new group.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-2-resources/runtime_environments/creating_updating_and_deleting_secure_agent_groups.html
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateRuntimeEnvironmentRequestBody'
+      responses:
+        200:
+          description: |-
+            The runtime environment was successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeEnvironment'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+    delete:
+      operationId: deleteRuntimeEnvironment
+      description: |-
+        Deletes a secure agent group.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-2-resources/runtime_environments/creating_updating_and_deleting_secure_agent_groups.html
+      responses:
+        200:
+          description: |-
+            Successfully deleted the runtime environment.
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+        502:
+          $ref: '#/components/responses/502'
+        503:
+          $ref: '#/components/responses/503'
+
+components:
+
+  parameters:
+
+    headerSession:
+      name: icSessionId
+      in: header
+      schema:
+        type: string
+      required: true
+
+  # https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/informatica-intelligent-cloud-services-rest-api/rest-api-responses.html
+  responses:
+
+    400:
+      description: |-
+        Bad request. Can be a field or format issue such as an invalid character or incorrect string length.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    401:
+      description: |-
+        Authentication issue. For example, invalid credentials or invalid session IDs.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    403:
+      description: |-
+        Generic error. For example, user doesn't have required permissions for a resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    404:
+      description: |-
+        Resource can't be found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    500:
+      description: |-
+        Unexpected error. Generic error message that appears when an unexpected condition was encountered.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    502:
+      description: |-
+        Network issue.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+    503:
+      description: |-
+        Service unavailable. The server cannot handle the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiErrorResponse'
+
+  schemas:
+
+    apiErrorResponse:
+      oneOf:
+        - $ref: '#/components/schemas/apiErrorResponseBody'
+        - $ref: '../v3/openapi.yml#/components/schemas/apiErrorResponseBody'
+
+    apiErrorResponseBody:
+      description: |-
+        When the REST API encounters an error, it returns a REST API error object.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/informatica-intelligent-cloud-services-rest-api/error-object.html
+      type: object
+      properties:
+        '@type':
+          type: string
+          enum:
+            - error
+        code:
+          type: string
+          description: |-
+            The internal error code.
+        description:
+          type: string
+          description: |-
+            The error message.
+        statusCode:
+          type: integer
+          description: |-
+            The http status code of the response.
+      required:
+        - '@type'
+        - code
+        - description
+        - statusCode
+      example: |-
+        {
+          "code": "UI_10000",
+          "description": "User name or password is not valid.",
+          "statusCode": 403,
+          "@type": "error"
+        }
+
+    loginRequestBody:
+      type: object
+      properties:
+        '@type':
+          type: string
+          enum:
+            - login
+        username:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services user name for the organization that you want to log in to.
+          maxLength: 255
+        password:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services password.
+          maxLength: 255
+      required:
+        - username
+        - password
+
+    loginResponseBody:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            User ID.
+        orgId:
+          type: string
+          description: |-
+            ID of the organization the user belongs to. 22 characters.
+            NOTE: Organizations that were created in legacy Informatica Cloud might have an
+            organization ID of 6 characters.
+        orgUuid:
+          type: string
+          description: |-
+            Unique identifier for the organization.
+        name:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services user name.
+        description:
+          type: string
+          description: |-
+            Description of the user.
+        createTime:
+          type: string
+          description: |-
+            When the user account was created.
+        updateTime:
+          type: string
+          description: |-
+            When the user account was last updated.
+        createdBy:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services user who created the user account.
+        updatedBy:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services user who last updated the user account.
+        sfUsername:
+          type: string
+          description: |-
+            Salesforce user name. Included when user is configured to authenticate through Salesforce.
+        password:
+          type: string
+          description: |-
+            Salesforce user password. Included when user is configured to authenticate through Salesforce.
+        firstName:
+          type: string
+          description: |-
+            First name for the user account.
+        lastName:
+          type: string
+          description: |-
+            Last name for the user account.
+        title:
+          type: string
+          description: |-
+            Title of the user.
+        phone:
+          type: string
+          description: |-
+            Phone number for the user.
+        securityQuestion:
+          type: string
+          description: |-
+            Security question. Returns one of the following codes:
+            SPOUSE_MEETING_CITY
+            FIRST_JOB_CITY
+            CHILDHOOD_FRIEND
+            MOTHER_MAIDEN_NAME
+            PET_NAME
+            CHILDHOOD_NICKNAME
+            CUSTOM_QUESTION:"<question>"
+        securityAnswer:
+          type: string
+          description: |-
+            Answer to the security question.
+        roles:
+          type: object
+          properties:
+            name:
+              type: string
+              description: |-
+                Role name. Returns one of the following codes:
+                Service Consumer
+                Designer
+                Admin
+            description:
+              type: string
+              description: |-
+                Role description.
+          description: |-
+            Object that includes a role object for each role assigned to the user.
+        emails:
+          type: string
+          description: |-
+            Email address to be notified when the user changes the account password.
+        timezone:
+          type: string
+          description: |-
+            Time zone of the user. Time zone honors Daylight Saving Time.
+            For more information, see Time zone codes.
+        serverUrl:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services URL for the organization the user belongs
+            to. Use the serverUrl as a base for most version 2 REST API resource URIs.
+        spiUrl:
+          type: string
+          deprecated: true
+          description: |-
+            This field is no longer applicable and has been deprecated.
+        uuId:
+          type: string
+          description: |-
+            Unique identifier for the user.
+        icSessionId:
+          type: string
+          description: |-
+            Informatica Intelligent Cloud Services session ID for version 2 REST API session.
+            Use in most version 2 REST API request headers.
+        forceChangePassword:
+          type: boolean
+          description: |-
+            Determines if the user must reset the password after the user logs in for the first time. Includes the following values:
+            True. The user must reset the password.
+            False. The user is not forced to reset the password.
+
+    getAgentInstallerInfoResponseBody:
+      type: object
+      properties:
+        '@type':
+          type: string
+          enum:
+            - agentInstallerInfo
+        downloadUrl:
+          type: string
+          description: |-
+            The url to use for downloading the current secure agent version.
+        installToken:
+          type: string
+          description: |-
+            The short-lived token to use when registering a secure agent with the environment.
+        checksumDownloadUrl:
+          type: string
+          description: |-
+            The url for a checksum file that can be used to verify the installation.
+
+    updateRuntimeEnvironmentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/runtimeEnvironmentDataMinimal'
+        - type: object
+          properties:
+            agents:
+              type: array
+              items:
+                $ref: '#/components/schemas/runtimeEnvironmentAgent'
+              description: |-
+                Agents assigned to the Secure Agent group.
+
+    runtimeEnvironment:
+      allOf:
+        - $ref: '#/components/schemas/runtimeEnvironmentDataMinimal'
+        - $ref: '#/components/schemas/runtimeEnvironmentDataBulk'
+      example: |-
+        {
+          "@type": "runtimeEnvironment",
+          "id": "01000325000000000005",
+          "orgId": "010003",
+          "name": "USW1MJ02W6PP-2",
+          "createTime": "2021-11-09T17:20:55.583Z",
+          "updateTime": "2021-11-09T17:20:55.583Z",
+          "createdBy": "ctan",
+          "updatedBy": "ctan",
+          "agents": [],
+          "isShared": false,
+          "federatedId": "9F4z0pY1kKqdlmLp5kYXkF",
+          "createTimeUTC": "2021-11-09T22:20:55.583Z",
+          "updateTimeUTC": "2021-11-09T22:20:55.583Z",
+          "serverlessConfig": {
+            "cloudProviderConfig": {
+              "cloudConfig": []
+            }
+          }
+        }
+
+    runtimeEnvironmentDataMinimal:
+      type: object
+      properties:
+        '@type':
+          type:   string
+          enum:   [ runtimeEnvironment ]
+          default: runtimeEnvironment
+        name:
+          type: string
+          description: |-
+            Name of the Secure Agent group.
+        isShared:
+          type: boolean
+          description: |-
+            Whether the Secure Agent group can be shared with sub-organizations.
+      required:
+        - name
+      example: |-
+        {
+          "@type": "runtimeEnvironment",
+          "name": "14402",
+          "isShared": true
+        }
+
+    runtimeEnvironmentDataBulk:
+      type: object
+      properties:
+        id:
+          type: string
+          description: |-
+            Secure Agent group ID.
+        orgId:
+          type: string
+          description: |-
+            Organization ID.
+        name:
+          type: string
+          description: |-
+            Secure Agent group name.
+        description:
+          type: string
+          description: |-
+            Description of the Secure Agent group.
+        createTime:
+          type: string
+          description: |-
+            Date and time the Secure Agent group was created.
+        updateTime:
+          type: string
+          description: |-
+            Date and time that the Secure Agent group was last updated.
+        createdBy:
+          type: string
+          description: |-
+            User who created the Secure Agent group.
+        updatedBy:
+          type: string
+          description: |-
+            User who last updated the Secure Agent group.
+        agents:
+          type: array
+          description: |-
+            Agents assigned to the Secure Agent group.
+          items:
+            $ref: '#/components/schemas/runtimeEnvironmentAgent'
+        federatedId:
+          type: string
+          description: |-
+            Global unique identifier.
+        serverlessConfig:
+          type: object
+          description: |-
+            Attribute that defines serverless runtime environment properties.
+
+    runtimeEnvironmentAgent:
+      type: object
+      description: |-
+        An agent assigned to a Secure Agent group.
+      properties:
+        id:
+          type: string
+          description: |-
+            Agent ID.
+        orgId:
+          type: string
+          description: |-
+            Organization ID.
+

@@ -1,0 +1,977 @@
+openapi: 3.0.0
+info:
+  title: Admin API for IDMC
+  version: 3.0.0
+externalDocs:
+  url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources.html
+servers:
+- url: /
+paths:
+  /public/core/v3/login:
+    post:
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/login.html
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginRequestBody"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/loginResponseBody"
+          description: Returns user information if the request is successful.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+  /public/core/v3/privileges:
+    get:
+      description: Use the privileges resource to obtain a list of privileges that
+        you can use for custom roles.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/b2b-gateway/current-version/rest-api-reference/platform_rest_api_version_3_resources/privileges.html
+      operationId: listPrivileges
+      parameters:
+      - description: The query string used to filter results.
+        example: /public/core/v3/privileges?q=status==All
+        explode: false
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/rolePrivilegeItem"
+                type: array
+          description: A successful response provides a list of privilege objects
+            matching the implicit or explicit query.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+  /public/core/v3/roles:
+    description: You can request the details for all of your organization's roles
+      or request the details for a particular role.
+    get:
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/getting-role-details.html
+      operationId: getRoles
+      parameters:
+      - explode: false
+        in: header
+        name: INFA-SESSION-ID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: |-
+          Query filter. You can filter using one of the following fields:
+          * roleId. Unique identifier for the role.
+          * roleName. Name of the role.
+        example: /public/core/v3/roles?q=roleName=="Business Manager"&expand=privileges
+        explode: true
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Returns the privileges associated with the role specified in
+          the query filter.
+        explode: true
+        in: query
+        name: expand
+        required: false
+        schema:
+          enum:
+          - privileges
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getRolesResponseBody"
+          description: Returns role information if successful.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+    post:
+      description: You can create custom roles for your organization.
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createRoleRequestBody"
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createRoleResponseBody"
+          description: "If successful, returns the roles object with the details you\
+            \ included in the POST request."
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+  /public/core/v3/roles/{role_ref}:
+    delete:
+      description: You can delete custom roles from your organization.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/deleting-a-role.html
+      operationId: deleteRole
+      parameters:
+      - explode: false
+        in: header
+        name: INFA-SESSION-ID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Either role id or role name.
+        explode: false
+        in: path
+        name: role_ref
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: A successful deletion.
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Successful operation with no response data.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+  /public/core/v3/roles/{role_ref}/addPrivileges:
+    put:
+      description: You can add privileges for custom roles.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/updating-a-role.html
+      operationId: addRolePrivileges
+      parameters:
+      - explode: false
+        in: header
+        name: INFA-SESSION-ID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Either role id or role name.
+        explode: false
+        in: path
+        name: role_ref
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        $ref: "#/components/requestBodies/rolePrivileges"
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Successful operation with no response data.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+  /public/core/v3/roles/{role_ref}/removePrivileges:
+    put:
+      description: |-
+        You can add privileges for custom roles.
+        You can't remove all of the privileges from a role. A role must have at least one privilege assigned to it.
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/platform-rest-api-version-3-resources/roles/updating-a-role.html
+      operationId: removeRolePrivileges
+      parameters:
+      - explode: false
+        in: header
+        name: INFA-SESSION-ID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Either role id or role name.
+        explode: false
+        in: path
+        name: role_ref
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        $ref: "#/components/requestBodies/rolePrivileges"
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Successful operation with no response data.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Bad request. Can be a field or format issue such as an invalid
+            character or incorrect string length.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Authentication issue. For example, invalid credentials or\
+            \ invalid session IDs."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: "Generic error. For example, user doesn't have required permissions\
+            \ for a resource."
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Resource can't be found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Unexpected error. Generic error message that appears when an
+            unexpected condition was encountered.
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Network issue.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/apiErrorResponseBody"
+          description: Service unavailable. The server cannot handle the request.
+components:
+  parameters:
+    headerSession:
+      explode: false
+      in: header
+      name: INFA-SESSION-ID
+      required: true
+      schema:
+        type: string
+      style: simple
+    pathRole:
+      description: Either role id or role name.
+      explode: false
+      in: path
+      name: role_ref
+      required: true
+      schema:
+        type: string
+      style: simple
+  requestBodies:
+    rolePrivileges:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/updateRoleRequestBody"
+      description: A partial role object with an array of privileges.
+  responses:
+    "204":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Successful operation with no response data.
+    "400":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Bad request. Can be a field or format issue such as an invalid
+        character or incorrect string length.
+    "401":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: "Authentication issue. For example, invalid credentials or invalid\
+        \ session IDs."
+    "403":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: "Generic error. For example, user doesn't have required permissions\
+        \ for a resource."
+    "404":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Resource can't be found.
+    "500":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Unexpected error. Generic error message that appears when an unexpected
+        condition was encountered.
+    "502":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Network issue.
+    "503":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apiErrorResponseBody"
+      description: Service unavailable. The server cannot handle the request.
+  schemas:
+    apiErrorResponseBody:
+      description: "When the REST API encounters an error, it returns a REST API error\
+        \ object."
+      example: |-
+        {
+          "error": {
+            "code": "IDS_085",
+            "message": "User name or password is not valid.",
+            "requestId": "9hr8e2ObIcChbwYftgDui7",
+            "details": null
+          }
+        }
+      externalDocs:
+        url: https://docs.informatica.com/integration-cloud/data-integration/current-version/rest-api-reference/informatica-intelligent-cloud-services-rest-api/error-object.html
+      properties:
+        error:
+          $ref: "#/components/schemas/apiError"
+      required:
+      - error
+      type: object
+    apiError:
+      allOf:
+      - $ref: "#/components/schemas/apiErrorDetail"
+      - properties:
+          requestId:
+            type: string
+          details:
+            items:
+              $ref: "#/components/schemas/apiErrorDetail"
+            type: array
+        required:
+        - requestId
+      type: object
+    apiErrorDetail:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        debugMessage:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    loginRequestBody:
+      properties:
+        username:
+          description: Informatica Intelligent Cloud Services user name for the organization
+            that you want to log in to.
+          maxLength: 255
+          type: string
+        password:
+          description: Informatica Intelligent Cloud Services password.
+          maxLength: 255
+          type: string
+      required:
+      - password
+      - username
+      type: object
+    loginResponseBody:
+      example:
+        userInfo:
+          orgName: orgName
+          parentOrgId: parentOrgId
+          name: name
+          groups: "{}"
+          sessionId: sessionId
+          id: id
+          orgId: orgId
+          status: Active
+        products:
+        - name: name
+          baseApiUrl: baseApiUrl
+        - name: name
+          baseApiUrl: baseApiUrl
+      properties:
+        products:
+          description: Subscribed Informatica products.
+          items:
+            $ref: "#/components/schemas/loginResponseBodyProduct"
+          type: array
+        userInfo:
+          $ref: "#/components/schemas/loginResponseBodyUserInfo"
+      required:
+      - products
+      - userInfo
+      type: object
+    loginResponseBodyProduct:
+      example:
+        name: name
+        baseApiUrl: baseApiUrl
+      properties:
+        name:
+          description: Product name.
+          type: string
+        baseApiUrl:
+          description: Base API URL for the product. Use in REST API requests.
+          type: string
+      required:
+      - baseApiUrl
+      - name
+      type: object
+    loginResponseBodyUserInfo:
+      example:
+        orgName: orgName
+        parentOrgId: parentOrgId
+        name: name
+        groups: "{}"
+        sessionId: sessionId
+        id: id
+        orgId: orgId
+        status: Active
+      properties:
+        sessionId:
+          description: REST API session ID for the current session. Use in most REST
+            API request headers.
+          type: string
+        id:
+          description: User ID.
+          type: string
+        name:
+          description: User name.
+          type: string
+        parentOrgId:
+          description: Organization ID for the parent.
+          maxLength: 22
+          minLength: 22
+          type: string
+        orgId:
+          description: ID of the organization the user belongs to.
+          maxLength: 22
+          minLength: 22
+          type: string
+        orgName:
+          description: Organization name.
+          type: string
+        groups:
+          description: User group information for the user.
+          type: object
+        status:
+          description: Status of the user.
+          enum:
+          - Active
+          - Inactive
+          type: string
+      required:
+      - groups
+      - id
+      - name
+      - orgId
+      - orgName
+      - parentOrgId
+      - sessionId
+      - status
+      type: object
+    getRolesResponseBody:
+      items:
+        $ref: "#/components/schemas/getRolesResponseBodyItem"
+      type: array
+    getRolesResponseBodyItem:
+      allOf:
+      - $ref: "#/components/schemas/roleInfo"
+      - $ref: "#/components/schemas/withPrivilegeItems"
+      example:
+        displayDescription: displayDescription
+        privileges:
+        - service: service
+          name: name
+          description: description
+          id: id
+          status: Enabled
+        - service: service
+          name: name
+          description: description
+          id: id
+          status: Enabled
+        updatedBy: updatedBy
+        displayName: displayName
+        description: description
+        updateTime: updateTime
+        orgId: orgId
+        createdBy: createdBy
+        createTime: createTime
+        systemRole: true
+        roleName: roleName
+        id: id
+        status: Enabled
+    createRoleRequestBody:
+      allOf:
+      - $ref: "#/components/schemas/withPrivilegeRefs"
+      - properties:
+          name:
+            description: Name of the role.
+            type: string
+          description:
+            description: Description of the role.
+            type: string
+        type: object
+      required:
+      - name
+      - privileges
+    createRoleResponseBody:
+      allOf:
+      - $ref: "#/components/schemas/roleInfo"
+      - $ref: "#/components/schemas/withPrivilegeItems"
+      example:
+        displayDescription: displayDescription
+        privileges:
+        - service: service
+          name: name
+          description: description
+          id: id
+          status: Enabled
+        - service: service
+          name: name
+          description: description
+          id: id
+          status: Enabled
+        updatedBy: updatedBy
+        displayName: displayName
+        description: description
+        updateTime: updateTime
+        orgId: orgId
+        createdBy: createdBy
+        createTime: createTime
+        systemRole: true
+        roleName: roleName
+        id: id
+        status: Enabled
+    updateRoleRequestBody:
+      properties:
+        privileges:
+          description: |-
+            IDs of the privileges to assign to the role.
+            A role must have at least one privilege assigned to it.
+          items:
+            nullable: false
+            type: string
+          minItems: 1
+          type: array
+      required:
+      - privileges
+      type: object
+    roleInfo:
+      properties:
+        id:
+          description: Role ID.
+          type: string
+        orgId:
+          description: ID of the organization the role belongs to.
+          type: string
+        createdBy:
+          description: User who created the role.
+          type: string
+        updatedBy:
+          description: User who last updated the role.
+          type: string
+        createTime:
+          description: Date and time the role was created.
+          type: string
+        updateTime:
+          description: Date and time the role was last updated.
+          type: string
+        roleName:
+          description: Name of the role.
+          type: string
+        description:
+          description: Description of the role.
+          type: string
+        displayName:
+          description: Role name displayed in the user interface.
+          type: string
+        displayDescription:
+          description: Description displayed in the user interface.
+          type: string
+        systemRole:
+          description: Whether the role is a system-defined role.
+          type: boolean
+        status:
+          $ref: "#/components/schemas/roleStatus"
+      type: object
+    roleStatus:
+      description: Whether the organization's license to use the role is valid or
+        has expired.
+      enum:
+      - Enabled
+      - Disabled
+      type: string
+    withPrivilegeItems:
+      example: |-
+        {
+          "privileges": [
+            {
+              "id": "0nTOXl8dzEwlSFoM0cO8gI",
+              "name": "view.ai.designer",
+              "description": "View application integration designer"
+            },
+            {
+              "id": "aQwUdcM8RcQewA1yWphZ4F",
+              "name": "view.ai.assets",
+              "description": "View  application integration assets"
+            }
+          ]
+        }
+      properties:
+        privileges:
+          items:
+            $ref: "#/components/schemas/rolePrivilegeItem"
+          type: array
+      type: object
+    rolePrivilegeItem:
+      example:
+        service: service
+        name: name
+        description: description
+        id: id
+        status: Enabled
+      properties:
+        id:
+          description: Privilege ID.
+          type: string
+        name:
+          description: Name of the privilege.
+          type: string
+        description:
+          description: Description of the privilege.
+          type: string
+        service:
+          description: The Informatica Intelligent Cloud Services service that applies
+            to the privilege.
+          type: string
+        status:
+          description: |-
+            Status of the privilege. Returns one of the following values:
+            * Enabled: License to use the privilege is valid.
+            * Disabled: License to use the privilege has expired.
+            * Unassigned: No license to use this privilege.
+            * Default: Privilege included by default.
+          enum:
+          - Enabled
+          - Disabled
+          - Default
+          - Unassigned
+          type: string
+      required:
+      - id
+      - name
+      - service
+      - status
+      type: object
+    withPrivilegeRefs:
+      example: |-
+        {
+          "privileges" : ["create.api.collection", "delete.api.collection"]
+        }
+      properties:
+        privileges:
+          description: |-
+            IDs of the privileges to assign to the role.
+            A role must have at least one privilege assigned to it.
+          items:
+            type: string
+          minItems: 1
+          type: array
+      type: object
